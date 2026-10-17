@@ -1,0 +1,8 @@
+{
+  "name": "opio",
+  "private": true,
+  "scripts": {
+    "dev": "node dev.mjs",
+    "migrate": "node dev.mjs migrate"
+  }
+}

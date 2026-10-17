@@ -1,0 +1,10 @@
+﻿
+/* a QR message that has been opened shows its words in the chat; the chat settings button and privacy sign */
+.msg.qrmsg.qrshown{max-width:min(520px,86%);align-items:flex-start}
+.qrmsg .qrwords{position:relative;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px 12px 28px}
+.qrmsg .qrwords p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.qrmsg.qrshown .qrfrom{left:-8px;bottom:-8px}
+.compose .qrsign.qrpriv.on{background:var(--accent);color:#fff}
+.cview .chatset{flex:0 0 auto;width:40px;height:40px;padding:0;display:grid;place-items:center;font-size:1.2rem}
+.sheet.chatsettings{max-width:420px;width:100%;text-align:left}
+.sheet.chatsettings .seg{margin-bottom:8px;flex-wrap:wrap}

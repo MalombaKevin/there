@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: opio
+      POSTGRES_USER: opio
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-opio}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U opio"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?set DJANGO_SECRET_KEY in .env}
+      DJANGO_DEBUG: "0"
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-http://localhost:8080}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:8080}
+      DATABASE_URL: postgres://opio:${POSTGRES_PASSWORD:-opio}@db:5432/opio
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      SECURE_COOKIES: "0"
+      MEDIA_ROOT: /app/media
+    volumes: [media:/app/media]
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
+    restart: unless-stopped
+    depends_on: [backend]
+    ports: ["${SITE_PORT:-8080}:80"]
+
+volumes:
+  pgdata:
+  media:

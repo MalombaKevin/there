@@ -1,0 +1,26 @@
+﻿import { lazy, Suspense } from 'react'
+
+/* Popups are code-split and only mounted while open, so they cost nothing (no download, no requests) until used. */
+const pick = (file, name) => lazy(() => (file === 'extras' ? import('./BoardExtras') : import('./Modals')).then((m) => ({ default: m[name] })))
+const AddLink = pick('modals', 'AddLinkModal')
+const EditLink = pick('modals', 'EditLinkModal')
+const Advertise = pick('modals', 'AdvertiseModal')
+const PickBoard = pick('modals', 'PickBoardModal')
+const PickFriend = pick('modals', 'PickFriendModal')
+const NewBoard = pick('modals', 'NewBoardModal')
+const Interests = pick('modals', 'InterestsModal')
+const BoardStyle = pick('extras', 'BoardStyleModal')
+const BoardActivity = pick('extras', 'BoardActivityModal')
+const Qr = pick('extras', 'QrModal')
+
+const when = (Comp, flag) => (props) => (props[flag] ? <Suspense fallback={null}><Comp {...props} /></Suspense> : null)
+export const AddLinkModal = when(AddLink, 'open')
+export const EditLinkModal = when(EditLink, 'link')
+export const AdvertiseModal = when(Advertise, 'link')
+export const PickBoardModal = when(PickBoard, 'payload')
+export const PickFriendModal = when(PickFriend, 'link')
+export const NewBoardModal = when(NewBoard, 'open')
+export const InterestsModal = when(Interests, 'open')
+export const BoardStyleModal = when(BoardStyle, 'open')
+export const BoardActivityModal = when(BoardActivity, 'open')
+export const QrModal = when(Qr, 'open')
